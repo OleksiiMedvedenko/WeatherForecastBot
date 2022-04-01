@@ -1,22 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace TelegramBot
 {
-    class OneDayWeatherResponse
+    class NowWeatherResponse
     {
-        public OneDayWeatherInfo Main { get; set; }
-        public OneDayWeatherInfo Wind { get; set; }
-        public OneDayWeatherInfo Clouds { get; set; }
-        public OneDayWeatherInfo[] Weather { get; set; }
+        public NowWeatherInfo Main { get; set; }
+        public NowWeatherInfo Wind { get; set; }
+        public NowWeatherInfo Clouds { get; set; }
+        public NowWeatherInfo[] Weather { get; set; }
+        public NowWeatherInfo Coord { get; set; }
 
         /// <summary>
         /// региональные параметры 
         /// </summary>
-        public OneDayWeatherInfo Sys { get; set; }
+        public NowWeatherInfo Sys { get; set; }
         /// <summary>
         /// city name
         /// </summary>

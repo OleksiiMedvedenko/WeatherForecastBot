@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace TelegramBot
 {
-    class OneDayWeatherInfo
+    class NowWeatherInfo
     {
         //Переменные так написанны поскольку когда мы десириализируем данные , они могут записываться только в такие переменные - это сделал разработчик самого сайта с которого мы берем информацию
 
@@ -40,6 +35,15 @@ namespace TelegramBot
         public string Country { get; set; }
 
         public string Description { get; set; }
+
+        /// <summary>
+        /// долгота города
+        /// </summary>
+        public decimal Lon { get; set; }
+        /// <summary>
+        /// широта города
+        /// </summary>
+        public decimal Lat { get; set; }
 
     }
 }

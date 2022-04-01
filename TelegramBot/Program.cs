@@ -1,175 +1,314 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Net;
+﻿using System;
 using Telegram.Bot;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
-using Telegram.Bot.Types.ReplyMarkups;
+using TelegramBot.Buttons;
+using TelegramBot.Controllers;
+using TelegramBot.Model.WeatherToDay;
 
 namespace TelegramBot
 {
     class Program
     {
+
         private static string Token { get; set; } = "5226846542:AAGsUUU6NnpAykz8UZKJLKPXlK_f9qhDIRE";
 
-        private static TelegramBotClient client;
-        private static OneDayWeatherResponse weatherResponse;
+        private static TelegramBotClient _client;
+        private static NowWeatherResponse _nowWeatherResponse;
+        private static WeatherResponce _weatherResponce;
+
+        private static string _forecastDateEntry = string.Empty;
 
         [Obsolete]
         static void Main(string[] args)
         {
-            client = new TelegramBotClient(Token);
-            client.StartReceiving(new UpdateType[] { UpdateType.Message });
-            client.OnMessage += OnMessageHandler;
+            _client = new TelegramBotClient(Token);
+            _client.StartReceiving(new UpdateType[] { UpdateType.Message });
+            _client.OnMessage += OnMessageHandler;
             Console.ReadLine();
-            client.StopReceiving();
+            _client.StopReceiving();
         }
 
         [Obsolete]
+
+        // - каткое описание работы этого метода, есть некий цикл While сперва от телеграмма мы получем
+        // сообщение какую погоду нам нужно получить, затем мы записываем значение в переменную (_choiceDay) чтобы сохранить наш выбор, 
+        // ведь дальше мы запрашивае город в котором хотим узнать погоду 
         private static async void OnMessageHandler(object sender, MessageEventArgs e)
         {
-            var message = e.Message;
-
-            var choice = await client.SendTextMessageAsync(message.Chat.Id, "Оберіть своє місто зі списку або введіть його власноруч",
-                        replyToMessageId: message.MessageId, replyMarkup: ChoiceCity());
             
-            var city = message;
+            var messageFromTG = e.Message;
 
-            
+            if (_forecastDateEntry == "")
+            {
+                _forecastDateEntry = messageFromTG.Text;
+            }
+
+            if (messageFromTG.Text != null)
+            {
+                Console.WriteLine($"Message was received from [{messageFromTG.Chat.Username}] [{DateTime.Now.ToShortTimeString()}] : {messageFromTG.Text}");
+
+                switch (_forecastDateEntry)
+                {
+                    case "Прогноз погоди на дану годину":
+
+                        if (_forecastDateEntry == messageFromTG.Text) // избегаем повторения, без єтой проверки код будет обрабатываться два раза - исправить- сделать по нормальному  !
+                        {
+                            var now = await _client.SendTextMessageAsync(messageFromTG.Chat.Id, "Оберіть ваше місто, або напишіть його самостійно на будь якій мові",
+                                replyMarkup: CityButtons.CitySelectionButton());
+                        }
+
+                        if (!messageFromTG.Text.Equals("Прогноз погоди на дану годину") && !messageFromTG.Text.Equals("Прогноз погоди на завтра")
+                            && !messageFromTG.Text.Equals("Прогноз погоди на сім днів") && !messageFromTG.Text.Equals("Прогноз погоди на сьогодні")) // что бы код не выполнился когда мы будем вводить какую погоду мы хотим получить, без этой проверки краш приложения - исправить- сделать по нормальному  !
+                        {
+                            _forecastDateEntry = string.Empty;
+                            GetWeatherForecastForNow(messageFromTG);
+                        }
+                        break;
+
+                    case "Прогноз погоди на сьогодні":
+                        if (_forecastDateEntry == messageFromTG.Text)
+                        {
+                            var now = await _client.SendTextMessageAsync(messageFromTG.Chat.Id, "Оберіть ваше місто, або напишіть його самостійно на будь якій мові",
+                                replyMarkup: CityButtons.CitySelectionButton());
+                        }
+
+                        if (!messageFromTG.Text.Equals("Прогноз погоди на дану годину") && !messageFromTG.Text.Equals("Прогноз погоди на завтра")
+                            && !messageFromTG.Text.Equals("Прогноз погоди на сім днів") && !messageFromTG.Text.Equals("Прогноз погоди на сьогодні"))
+                        {
+                            _forecastDateEntry = string.Empty;
+                            GetWeatherForecastForToday(messageFromTG);
+                        }
+                        break;
+
+                    case "Прогноз погоди на завтра":
+
+                        if (_forecastDateEntry == messageFromTG.Text)
+                        {
+                            var now = await _client.SendTextMessageAsync(messageFromTG.Chat.Id, "Оберіть ваше місто, або напишіть його самостійно на будь якій мові",
+                                replyMarkup: CityButtons.CitySelectionButton());
+                        }
+
+                        if (!messageFromTG.Text.Equals("Прогноз погоди на дану годину") && !messageFromTG.Text.Equals("Прогноз погоди на завтра")
+                            && !messageFromTG.Text.Equals("Прогноз погоди на сім днів") && !messageFromTG.Text.Equals("Прогноз погоди на сьогодні"))
+                        {
+                            _forecastDateEntry = string.Empty;
+                            GetWeatherForecastForTomorrow(messageFromTG);
+                        }
+                        break;
+
+                    case "Прогноз погоди на сім днів":
+
+                        if (_forecastDateEntry == messageFromTG.Text)
+                        {
+                            var now = await _client.SendTextMessageAsync(messageFromTG.Chat.Id, "Оберіть ваше місто, або напишіть його самостійно на будь якій мові",
+                                replyMarkup: CityButtons.CitySelectionButton());
+                        }
+
+                        if (!messageFromTG.Text.Equals("Прогноз погоди на дану годину") && !messageFromTG.Text.Equals("Прогноз погоди на завтра")
+                            && !messageFromTG.Text.Equals("Прогноз погоди на сім днів") && !messageFromTG.Text.Equals("Прогноз погоди на сьогодні"))
+                        {
+                            _forecastDateEntry = string.Empty;
+                            GetWeatherForecastForWeek(messageFromTG);
+                        }
+
+                        break;
+
+                    default:
+                        _forecastDateEntry = string.Empty;
+                        await _client.SendTextMessageAsync(messageFromTG.Chat.Id, "Не знаю такої команди!",
+                            replyMarkup: WeatherForecastButtons.SelectingWeatherForecastButton());
+                        break;
+                }
+            }
+        }
+
+        private static async void GetWeatherForecastForNow(Message message)
+        {
 
             switch (message.Text)
             {
-                case "Прогноз погоди на дану годину":
-
-                    var now = await client.SendTextMessageAsync(message.Chat.Id, "Прогноз погоди на дану годину",
-                            replyMarkup: ChoiceForecastForOneOrSevenDays());
+                case "Вроцлав":
+                    _nowWeatherResponse = NowWeatherController.GetWeatherFromWebSite("Вроцлав");
+                    var Wroclaw = await _client.SendTextMessageAsync(message.Chat.Id, NowWeatherController.GetWeatherInfoNow(_nowWeatherResponse), 
+                        replyMarkup: WeatherForecastButtons.SelectingWeatherForecastButton());
                     return;
 
-                case "Прогноз погоди на сьогодні":
-                    var now1 = await client.SendTextMessageAsync(message.Chat.Id, "Прогноз погоди на сьогодні",
-                         replyMarkup: ChoiceForecastForOneOrSevenDays());
+                case "Кропивницький":
+                    _nowWeatherResponse = NowWeatherController.GetWeatherFromWebSite("Кропивницький");
+                    var Kropyvnytskyi = await _client.SendTextMessageAsync(message.Chat.Id, NowWeatherController.GetWeatherInfoNow(_nowWeatherResponse),
+                         replyMarkup: WeatherForecastButtons.SelectingWeatherForecastButton());
                     break;
 
-                case "Прогноз погоди на завтра":
+                default:
+                    _nowWeatherResponse = NowWeatherController.GetWeatherFromWebSite(message.Text);
+
+                    if (_nowWeatherResponse != null)
+                    {
+                        var anyCity = await _client.SendTextMessageAsync(message.Chat.Id, NowWeatherController.GetWeatherInfoNow(_nowWeatherResponse),
+                            replyMarkup: WeatherForecastButtons.SelectingWeatherForecastButton());
+
+                        break;
+                    }
+                    else
+                    {
+                        await _client.SendTextMessageAsync(message.Chat.Id, "Перевірте чи поправно введена назва міста!", 
+                            replyMarkup: WeatherForecastButtons.SelectingWeatherForecastButton());
+                    }
 
                     break;
+            }
+        }
 
-                case "Прогноз погоди на сім днів":
+        private static async void GetWeatherForecastForToday(Message message)
+        {
 
-                    break;
+            switch (message.Text)
+            {
+                case "Вроцлав":
+                    _nowWeatherResponse = NowWeatherController.GetWeatherFromWebSite("Вроцлав");
+                    (decimal, decimal) coordsWRO = NowWeatherController.GetCityCoords(_nowWeatherResponse);
 
-                case "Повернутись до вибору міста":
-                    var choice1 = await client.SendTextMessageAsync(message.Chat.Id, "Оберіть своє місто зі списку або введіть його власноруч",
-                        replyToMessageId: message.MessageId, replyMarkup: ChoiceCity());
+                    _weatherResponce = WeatherController.GetWeatherFromWebSite(coordsWRO.Item1, coordsWRO.Item2);
+
+                    var Wroclaw = await _client.SendTextMessageAsync(message.Chat.Id, WeatherController.GetTodayWeatherInfo(_weatherResponce),
+                        replyMarkup: WeatherForecastButtons.SelectingWeatherForecastButton());
+
+                    return;
+
+                case "Кропивницький":
+                    _nowWeatherResponse = NowWeatherController.GetWeatherFromWebSite("Кропивницький");
+                    (decimal, decimal) coordsKROP = NowWeatherController.GetCityCoords(_nowWeatherResponse);
+
+                    _weatherResponce = WeatherController.GetWeatherFromWebSite(coordsKROP.Item1, coordsKROP.Item2);
+
+                    var Krop = await _client.SendTextMessageAsync(message.Chat.Id, WeatherController.GetTodayWeatherInfo(_weatherResponce),
+                        replyMarkup: WeatherForecastButtons.SelectingWeatherForecastButton());
                     break;
 
                 default:
 
-                    await client.SendTextMessageAsync(message.Chat.Id, "...",
-                        replyMarkup: ChoiceCity());
+                    _nowWeatherResponse = NowWeatherController.GetWeatherFromWebSite(message.Text);
+                    (decimal, decimal) coordsAnyCity = NowWeatherController.GetCityCoords(_nowWeatherResponse);
+
+                    _weatherResponce = WeatherController.GetWeatherFromWebSite(coordsAnyCity.Item1, coordsAnyCity.Item2);
+
+                    if (_weatherResponce != null)
+                    {
+                        var anyCity = await _client.SendTextMessageAsync(message.Chat.Id, WeatherController.GetTodayWeatherInfo(_weatherResponce),
+                        replyMarkup: WeatherForecastButtons.SelectingWeatherForecastButton());
+
+                        break;
+                    }
+                    else
+                    {
+                        await _client.SendTextMessageAsync(message.Chat.Id, "Перевірте чи поправно введена назва міста!",
+                            replyMarkup: WeatherForecastButtons.SelectingWeatherForecastButton());
+                    }
+
+                    break;
+            }
+        }
+
+        private static async void GetWeatherForecastForTomorrow(Message message)
+        {
+
+            switch (message.Text)
+            {
+                case "Вроцлав":
+                    _nowWeatherResponse = NowWeatherController.GetWeatherFromWebSite("Вроцлав");
+                    (decimal, decimal) coordsWRO = NowWeatherController.GetCityCoords(_nowWeatherResponse);
+
+                    _weatherResponce = WeatherController.GetWeatherFromWebSite(coordsWRO.Item1, coordsWRO.Item2);
+
+                    var Wroclaw = await _client.SendTextMessageAsync(message.Chat.Id, WeatherController.GetTomorrowWeatherInfo(_weatherResponce),
+                        replyMarkup: WeatherForecastButtons.SelectingWeatherForecastButton());
+
+                    return;
+
+                case "Кропивницький":
+                    _nowWeatherResponse = NowWeatherController.GetWeatherFromWebSite("Кропивницький");
+                    (decimal, decimal) coordsKROP = NowWeatherController.GetCityCoords(_nowWeatherResponse);
+
+                    _weatherResponce = WeatherController.GetWeatherFromWebSite(coordsKROP.Item1, coordsKROP.Item2);
+
+                    var Krop = await _client.SendTextMessageAsync(message.Chat.Id, WeatherController.GetTomorrowWeatherInfo(_weatherResponce),
+                        replyMarkup: WeatherForecastButtons.SelectingWeatherForecastButton());
                     break;
 
-                    #region Ненужные команды
-                    //var sticker = await client.SendStickerAsync(
-                    //    chatId: message.Chat.Id,
-                    //    sticker: "https://cdn.tlgrm.app/stickers/96b/f1e/96bf1eca-a75d-3b7c-b620-bb5f2cdac89f/192/1.webp",
-                    //    replyToMessageId: message.MessageId,
-                    //    replyMarkup: GetButtons());
+                default:
 
-                    //var pic = await client.SendPhotoAsync(chatId: message.Chat.Id,
-                    //    photo: "https://scontent-vie1-1.xx.fbcdn.net/v/t39.30808-6/276262322_5303012999730593_2356718401733600899_n.jpg?_nc_cat=104&ccb=1-5&_nc_sid=09cbfe&_nc_ohc=zaCkZdsGqKUAX-FaZr0&tn=HZR5UL9zvrEjBtMF&_nc_ht=scontent-vie1-1.xx&oh=00_AT_Bz9bhTfCQTOENnax_o-QBrmC5wMLwHs_8_GtgKVwT2g&oe=6248AA28",
-                    //    replyMarkup: GetButtons());
-                    #endregion
+                    _nowWeatherResponse = NowWeatherController.GetWeatherFromWebSite(message.Text);
+                    (decimal, decimal) coordsAnyCity = NowWeatherController.GetCityCoords(_nowWeatherResponse);
+
+                    _weatherResponce = WeatherController.GetWeatherFromWebSite(coordsAnyCity.Item1, coordsAnyCity.Item2);
+
+                    if (_weatherResponce != null)
+                    {
+                        var anyCity = await _client.SendTextMessageAsync(message.Chat.Id, WeatherController.GetTomorrowWeatherInfo(_weatherResponce),
+                        replyMarkup: WeatherForecastButtons.SelectingWeatherForecastButton());
+
+                        break;
+                    }
+                    else
+                    {
+                        await _client.SendTextMessageAsync(message.Chat.Id, "Перевірте чи поправно введена назва міста!",
+                            replyMarkup: WeatherForecastButtons.SelectingWeatherForecastButton());
+                    }
+
+                    break;
             }
-
         }
 
-        private static IReplyMarkup ChoiceCity()
+        private static async void GetWeatherForecastForWeek(Message message)
         {
-            return new ReplyKeyboardMarkup
+
+            switch (message.Text)
             {
-                Keyboard = new List<List<KeyboardButton>>
-                {
-                    new List<KeyboardButton> { new KeyboardButton { Text = $"Wroclaw" },  new KeyboardButton { Text = "Kropyvnytskyi" } },
-                }
-            };
+                case "Вроцлав":
+                    _nowWeatherResponse = NowWeatherController.GetWeatherFromWebSite("Вроцлав");
+                    (decimal, decimal) coordsWRO = NowWeatherController.GetCityCoords(_nowWeatherResponse);
+
+                    _weatherResponce = WeatherController.GetWeatherFromWebSite(coordsWRO.Item1, coordsWRO.Item2);
+
+                    var Wroclaw = await _client.SendTextMessageAsync(message.Chat.Id, WeatherController.GetWeekWeatherInfo(_weatherResponce),
+                        replyMarkup: WeatherForecastButtons.SelectingWeatherForecastButton());
+
+                    return;
+
+                case "Кропивницький":
+                    _nowWeatherResponse = NowWeatherController.GetWeatherFromWebSite("Кропивницький");
+                    (decimal, decimal) coordsKROP = NowWeatherController.GetCityCoords(_nowWeatherResponse);
+
+                    _weatherResponce = WeatherController.GetWeatherFromWebSite(coordsKROP.Item1, coordsKROP.Item2);
+
+                    var Krop = await _client.SendTextMessageAsync(message.Chat.Id, WeatherController.GetWeekWeatherInfo(_weatherResponce),
+                        replyMarkup: WeatherForecastButtons.SelectingWeatherForecastButton());
+                    break;
+
+                default:
+
+                    _nowWeatherResponse = NowWeatherController.GetWeatherFromWebSite(message.Text);
+                    (decimal, decimal) coordsAnyCity = NowWeatherController.GetCityCoords(_nowWeatherResponse);
+
+                    _weatherResponce = WeatherController.GetWeatherFromWebSite(coordsAnyCity.Item1, coordsAnyCity.Item2);
+
+                    if (_weatherResponce != null)
+                    {
+                        var anyCity = await _client.SendTextMessageAsync(message.Chat.Id, WeatherController.GetWeekWeatherInfo(_weatherResponce),
+                        replyMarkup: WeatherForecastButtons.SelectingWeatherForecastButton());
+
+                        break;
+                    }
+                    else
+                    {
+                        await _client.SendTextMessageAsync(message.Chat.Id, "Перевірте чи поправно введена назва міста!",
+                            replyMarkup: WeatherForecastButtons.SelectingWeatherForecastButton());
+                    }
+
+                    break;
+            }
         }
-
-        private static IReplyMarkup ChoiceForecastForOneOrSevenDays()
-        {
-            return new ReplyKeyboardMarkup
-            {
-                Keyboard = new List<List<KeyboardButton>>
-                {
-                    new List<KeyboardButton> { new KeyboardButton { Text = $"Прогноз погоди на дану годину" },  new KeyboardButton { Text = "Прогноз погоди на сьогодні" } },
-                    new List<KeyboardButton> { new KeyboardButton { Text = "Прогноз погоди на завтра" }, new KeyboardButton { Text = "Прогноз погоди на сім днів" } },
-                    new List<KeyboardButton> { new KeyboardButton { Text = "Повернутись до вибору міста" } }
-                }
-            };
-        }
-
-        //private static async void GetLogicForOneDayForecast(Message message)
-        //{
-        //    var choice = await client.SendTextMessageAsync(message.Chat.Id, "Оберіть",
-        //                 replyMarkup: GetOneDayButtons());
-        //    Console.ReadLine();
-
-        //    switch (message.Text)
-        //    {
-        //        case "Wroclaw":
-        //            weatherResponse = OneDayWeatherController.GetWeatherFromWebSite("Wroclaw");
-        //            var Wroclaw = await client.SendTextMessageAsync(message.Chat.Id, OneDayWeatherController.GetWeatherInfo(weatherResponse),
-        //                replyToMessageId: message.MessageId, replyMarkup: GetOneDayButtons());
-        //            return;
-
-        //        case "Kropyvnytskyi":
-        //            weatherResponse = OneDayWeatherController.GetWeatherFromWebSite("Kropyvnytskyi");
-        //            var Kropyvnytskyi = await client.SendTextMessageAsync(message.Chat.Id, OneDayWeatherController.GetWeatherInfo(weatherResponse),
-        //                replyToMessageId: message.MessageId, replyMarkup: GetOneDayButtons());
-        //            break;
-
-        //        case "Послать русский корабль на х*й":
-        //            var str = await client.SendTextMessageAsync(message.Chat.Id, "Ruskiy vojenyj korabl - idi naxyj!", replyMarkup: GetOneDayButtons());
-
-        //            var pic = await client.SendPhotoAsync(chatId: message.Chat.Id,
-        //                photo: "https://i1.sndcdn.com/artworks-1nniBHIeZ6z5fYnS-AzbPvg-t500x500.jpg",
-        //                replyMarkup: GetOneDayButtons());
-        //            break;
-
-        //        default:
-        //            weatherResponse = OneDayWeatherController.GetWeatherFromWebSite(message.Text);
-
-        //            if (weatherResponse != null)
-        //            {
-        //                var anyCity = await client.SendTextMessageAsync(message.Chat.Id, OneDayWeatherController.GetWeatherInfo(weatherResponse),
-        //                replyToMessageId: message.MessageId, replyMarkup: GetOneDayButtons());
-
-        //                break;
-        //            }
-        //            else
-        //            {
-        //                await client.SendTextMessageAsync(message.Chat.Id, "Перевірте чи поправно введена назва міста!", replyMarkup: GetOneDayButtons());
-        //            }
-
-        //            await client.SendTextMessageAsync(message.Chat.Id, "Оберіть ваше місто, або напишіть його самостійно на будь якій мові",
-        //                replyMarkup: GetOneDayButtons());
-        //            break;
-
-        //            #region Ненужные команды
-        //            //var sticker = await client.SendStickerAsync(
-        //            //    chatId: message.Chat.Id,
-        //            //    sticker: "https://cdn.tlgrm.app/stickers/96b/f1e/96bf1eca-a75d-3b7c-b620-bb5f2cdac89f/192/1.webp",
-        //            //    replyToMessageId: message.MessageId,
-        //            //    replyMarkup: GetButtons());
-
-        //            //var pic = await client.SendPhotoAsync(chatId: message.Chat.Id,
-        //            //    photo: "https://scontent-vie1-1.xx.fbcdn.net/v/t39.30808-6/276262322_5303012999730593_2356718401733600899_n.jpg?_nc_cat=104&ccb=1-5&_nc_sid=09cbfe&_nc_ohc=zaCkZdsGqKUAX-FaZr0&tn=HZR5UL9zvrEjBtMF&_nc_ht=scontent-vie1-1.xx&oh=00_AT_Bz9bhTfCQTOENnax_o-QBrmC5wMLwHs_8_GtgKVwT2g&oe=6248AA28",
-        //            //    replyMarkup: GetButtons());
-        //            #endregion
-        //    }
-        //}
     }
 }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace TelegramBot.Localization.UkraineLokalization.DescriptionLocalization
 {
@@ -71,7 +67,10 @@ namespace TelegramBot.Localization.UkraineLokalization.DescriptionLocalization
             "мало хмар 🌤️",
             "невелика хмарність ⛅",
             "помірна хмарність ⛅",
-            "Хмарно ☁️☁️"
+            "Хмарно ☁️☁️",
+
+            "Дощ зі снігом ❄️🌨☔",
+            "Сніг ❄️"
         };
     }
 }
