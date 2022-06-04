@@ -11,7 +11,6 @@ namespace TelegramBot
 {
     class Program
     {
-
         private static string Token { get; set; } = "5226846542:AAGsUUU6NnpAykz8UZKJLKPXlK_f9qhDIRE";
 
         private static TelegramBotClient _client;
@@ -30,14 +29,12 @@ namespace TelegramBot
             _client.StopReceiving();
         }
 
-        [Obsolete]
-
         // - каткое описание работы этого метода, есть некий цикл While сперва от телеграмма мы получем
         // сообщение какую погоду нам нужно получить, затем мы записываем значение в переменную (_choiceDay) чтобы сохранить наш выбор, 
         // ведь дальше мы запрашивае город в котором хотим узнать погоду 
+        [Obsolete]
         private static async void OnMessageHandler(object sender, MessageEventArgs e)
         {
-            
             var messageFromTG = e.Message;
 
             if (_forecastDateEntry == "")
@@ -47,7 +44,7 @@ namespace TelegramBot
 
             if (messageFromTG.Text != null)
             {
-                Console.WriteLine($"Message was received from [{messageFromTG.Chat.Username}] [{DateTime.Now.ToShortTimeString()}] : {messageFromTG.Text}");
+                Console.WriteLine($"Message was received from [{messageFromTG.Chat.Username}] [{DateTime.Now.ToShortTimeString()}] : {messageFromTG.Text} - {messageFromTG.From.Id} {messageFromTG.From.LanguageCode}");
 
                 switch (_forecastDateEntry)
                 {

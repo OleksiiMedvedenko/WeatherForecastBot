@@ -64,7 +64,7 @@ namespace TelegramBot.Localization.UkraineLokalization.DescriptionLocalization
             "шквали 🌬️🌀",
             "торнадо 🌪️",
             "чисте небо ☀️",
-            "мало хмар 🌤️",
+            "малохмарна погода 🌤️",
             "невелика хмарність ⛅",
             "помірна хмарність ⛅",
             "Хмарно ☁️☁️",

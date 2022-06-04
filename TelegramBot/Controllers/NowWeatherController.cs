@@ -29,8 +29,9 @@ namespace TelegramBot
 
                 return nowWeatherResponse;
             }
-            catch
+            catch (Exception ex)
             {
+                Console.WriteLine(ex.Message);
                 return null;
             }
         }
@@ -83,7 +84,12 @@ namespace TelegramBot
 
         public static (decimal, decimal) GetCityCoords(NowWeatherResponse nowWeatherResponse)
         {
-            return (nowWeatherResponse.Coord.Lat, nowWeatherResponse.Coord.Lon);
+            if (nowWeatherResponse != null)
+            {
+                return (nowWeatherResponse.Coord.Lat, nowWeatherResponse.Coord.Lon);
+            }
+
+            return (0, 0);
         }
 
     }
