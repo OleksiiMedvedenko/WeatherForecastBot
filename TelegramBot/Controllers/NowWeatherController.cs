@@ -42,7 +42,7 @@ namespace TelegramBot
         }
          
 
-        public static string GetWeatherInfoNow(NowWeatherResponse nowWeatherResponse)
+        public static string GetWeatherInfoNow(NowWeatherResponse nowWeatherResponse, Action action = null)
         {
             return localization.DisplayInfoOnPolish(nowWeatherResponse);
         }
