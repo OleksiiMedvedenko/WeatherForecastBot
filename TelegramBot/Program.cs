@@ -63,10 +63,10 @@ namespace TelegramBot
                                 replyMarkup: WeatherForecastButtons.SelectingWeatherForecastButtonOnUkraine());
                         }
 
-                        if (!messageFromTG.Text.Equals($"Ukrainian") && !messageFromTG.Text.Equals("Polish") // что бы код не выполнился когда мы будем вводить какую погоду мы хотим получить, без этой проверки краш приложения - исправить- сделать по нормальному  !
+                        if (!messageFromTG.Text.Equals($"Ukrainian") && !messageFromTG.Text.Equals("Polish")) // что бы код не выполнился когда мы будем вводить какую погоду мы хотим получить, без этой проверки краш приложения - исправить- сделать по нормальному  !
                         {
                             _forecastDateEntry = string.Empty;
-                            GetTimeForecast(e);
+                            GetTimeForecast(messageFromTG);
                         }
                         break;
 
@@ -80,10 +80,10 @@ namespace TelegramBot
                                 replyMarkup: WeatherForecastButtons.SelectingWeatherForecastButtonOnPolish());
                         }
 
-                        if (!messageFromTG.Text.Equals($"Polish") && !messageFromTG.Text.Equals("Ukrainian")
+                        if (!messageFromTG.Text.Equals($"Polish") && !messageFromTG.Text.Equals("Ukrainian"))
                         {
                             _forecastDateEntry = string.Empty;
-                            GetTimeForecast(e);
+                            GetTimeForecast(messageFromTG);
                         }
                         break;
 
@@ -97,9 +97,9 @@ namespace TelegramBot
         }
 
         [Obsolete]
-        private static async void GetTimeForecast(MessageEventArgs e)
+        private static async void GetTimeForecast(Message message)
         {
-            var messageFromTG = e.Message;
+            var messageFromTG = message;
 
             if (_forecastDateEntry == "")
             {
