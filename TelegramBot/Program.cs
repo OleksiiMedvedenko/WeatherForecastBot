@@ -23,6 +23,7 @@ namespace TelegramBot
 
         private static bool choiceLanguage;
 
+        private static string _languageDataEntry = string.Empty;
         private static string _forecastDateEntry = string.Empty;
 
         [Obsolete]
@@ -43,21 +44,21 @@ namespace TelegramBot
         {
             var messageFromTG = e.Message;
 
-            if (_forecastDateEntry == "")
+            if (_languageDataEntry == "")
             {
-                _forecastDateEntry = messageFromTG.Text;
+                _languageDataEntry = messageFromTG.Text;
             }
 
             if (messageFromTG.Text != null)
             {
                 Console.WriteLine($"Message was received from [{messageFromTG.Chat.Username}] [{DateTime.Now.ToShortTimeString()}] : {messageFromTG.Text} - {messageFromTG.From.Id} {messageFromTG.From.LanguageCode}");
 
-                switch (_forecastDateEntry)
+                switch (_languageDataEntry)
                 {
                     case "Ukrainian":
 
                         choiceLanguage = true;
-                        if (_forecastDateEntry == messageFromTG.Text)
+                        if (_languageDataEntry == messageFromTG.Text)
                         {
                             var now = await _client.SendTextMessageAsync(messageFromTG.Chat.Id, "Виберіть час, на який ви хочете отримати прогноз погоди",
                                 replyMarkup: WeatherForecastButtons.SelectingWeatherForecastButtonOnUkraine());
@@ -65,7 +66,7 @@ namespace TelegramBot
 
                         if (!messageFromTG.Text.Equals($"Ukrainian") && !messageFromTG.Text.Equals("Polish")) // что бы код не выполнился когда мы будем вводить какую погоду мы хотим получить, без этой проверки краш приложения - исправить- сделать по нормальному  !
                         {
-                            _forecastDateEntry = string.Empty;
+                            _languageDataEntry = string.Empty;
                             GetTimeForecast(messageFromTG);
                         }
                         break;
@@ -74,7 +75,7 @@ namespace TelegramBot
 
                         choiceLanguage = false;
 
-                        if (_forecastDateEntry == messageFromTG.Text)
+                        if (_languageDataEntry == messageFromTG.Text)
                         {
                             var now = await _client.SendTextMessageAsync(messageFromTG.Chat.Id, "Wybierz czas, dla którego chcesz uzyskać prognozę pogody",
                                 replyMarkup: WeatherForecastButtons.SelectingWeatherForecastButtonOnPolish());
@@ -82,13 +83,13 @@ namespace TelegramBot
 
                         if (!messageFromTG.Text.Equals($"Polish") && !messageFromTG.Text.Equals("Ukrainian"))
                         {
-                            _forecastDateEntry = string.Empty;
+                            _languageDataEntry = string.Empty;
                             GetTimeForecast(messageFromTG);
                         }
                         break;
 
                     default:
-                        _forecastDateEntry = string.Empty;
+                        _languageDataEntry = string.Empty;
                         await _client.SendTextMessageAsync(messageFromTG.Chat.Id, "Не знаю такої команди!",
                             replyMarkup: LanguageButtons.LanguageSelectionButtons());
                         break;
