@@ -63,8 +63,7 @@ namespace TelegramBot
                                 replyMarkup: WeatherForecastButtons.SelectingWeatherForecastButtonOnUkraine());
                         }
 
-                        if (!messageFromTG.Text.Equals($"Прогноз погоди на дану годину") && !messageFromTG.Text.Equals("Прогноз погоди на завтра")
-                             && !messageFromTG.Text.Equals("Прогноз погоди на сім днів") && !messageFromTG.Text.Equals("Прогноз погоди на сьогодні")) // что бы код не выполнился когда мы будем вводить какую погоду мы хотим получить, без этой проверки краш приложения - исправить- сделать по нормальному  !
+                        if (!messageFromTG.Text.Equals($"Ukrainian") && !messageFromTG.Text.Equals("Polish") // что бы код не выполнился когда мы будем вводить какую погоду мы хотим получить, без этой проверки краш приложения - исправить- сделать по нормальному  !
                         {
                             _forecastDateEntry = string.Empty;
                             GetTimeForecast(e);
@@ -81,8 +80,7 @@ namespace TelegramBot
                                 replyMarkup: WeatherForecastButtons.SelectingWeatherForecastButtonOnPolish());
                         }
 
-                        if (!messageFromTG.Text.Equals($"Prognoza pogody na daną godzinę") && !messageFromTG.Text.Equals("Prognoza pogody na dziś")
-                             && !messageFromTG.Text.Equals("Prognoza pogody na jutro") && !messageFromTG.Text.Equals("Siedmiodniowa prognoza pogody"))
+                        if (!messageFromTG.Text.Equals($"Polish") && !messageFromTG.Text.Equals("Ukrainian")
                         {
                             _forecastDateEntry = string.Empty;
                             GetTimeForecast(e);
