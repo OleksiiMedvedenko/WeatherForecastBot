@@ -16,9 +16,6 @@ namespace TelegramBot
         {
             try
             {
-
-                //string urlAddress = $"https://api.openweathermap.org/data/2.5/weather?q={city}&units=metric&appid=94ec0cde62edeab74471251a77d69697"; // &lang=ua - автоматическое переведенная инфрмация с сайтф на укр
-
                 var urlAddress = url;
                 string response;
 

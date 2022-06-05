@@ -11,7 +11,7 @@ namespace TelegramBot.Model.WeatherToDay
         /// </summary>
         public string Timezone { get; set; }
         /// <summary>
-        /// часовой пояс - точнее прибавка времени к UTC
+        ///  strefa czasowa - a dokładniej dodanie czasu do UTC
         /// </summary>
         public double Timezone_offset { get; set; }
     }

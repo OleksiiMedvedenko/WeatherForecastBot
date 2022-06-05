@@ -5,32 +5,26 @@ namespace TelegramBot.Model.WeatherToDay
     public class WeatherInfo
     {
         /// <summary>
-        /// Температура
+        /// Temperature
         /// </summary>
         public TemperatureInfo Temp { get; set; }
 
         /// <summary>
-        /// давление 
+        /// Cisniencie 
         /// </summary>
         public float Pressure { get; set; }
 
         /// <summary>
-        /// влажность  
+        /// wilgotność  
         /// </summary>
         public float Humidity { get; set; }
 
-        /// <summary>
-        /// скорость ветра 
-        /// </summary>
         public float Wind_speed { get; set; }
 
-        /// <summary>
-        /// облачность!
-        /// </summary>
         public float Clouds { get; set; }
 
         /// <summary>
-        /// Вероятность осадков
+        /// Szansa na opady
         /// </summary>
         public float Pop { get; set; }
 

@@ -15,12 +15,11 @@ namespace TelegramBot.Controllers
     {
 
         public static LocalizationInterface localization = new LocalizationInterface(new EnglishLocalization(), new PolishLocalization(), new UkrainianLocalization());
-        public static WeatherResponce GetWeatherFromWebSite(decimal lat, decimal lon)
+        public static WeatherResponce GetWeatherFromWebSite(string url)
         {
             try
             {
-                string urlAddress = $"https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=alerts&units=metric&appid=94ec0cde62edeab74471251a77d69697"; // &lang=ua - автоматическое переведенная инфрмация с сайтф на укр
-                
+                string urlAddress = url;
                 string response;
 
                 HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(urlAddress);
@@ -42,82 +41,38 @@ namespace TelegramBot.Controllers
         }
 
 
-        public static string GetTodayWeatherInfo(WeatherResponce todayWeatherResponce)
+        public static string GetTodayWeatherInfo(WeatherResponce todayWeatherResponce, bool language)
         {
+            if (language == true)
+            {
+                return localization.DisplayInfoOnUkrOnToday(todayWeatherResponce);
+            }
             return localization.DisplayInfoOnPolishOnToday(todayWeatherResponce);
         }
 
-        public static string GetTomorrowWeatherInfo(WeatherResponce todayWeatherResponce)
+        public static string GetTomorrowWeatherInfo(WeatherResponce tomorrowWeatherResponce, bool language)
         {
-            if (todayWeatherResponce != null)
+            if (tomorrowWeatherResponce != null)
             {
-                var day = DayOfWeekLocalization.DayLocalization(DateTime.Now.DayOfWeek);
-                var dayForUkraine = DayOfWeekLocalization.DayLocalization(DateTime.Now.AddHours(1).DayOfWeek);
-                var weatherDeskriptionOnUkrainianOnToday = WeatherDescriptionLocalization.GetWeatherDescriptionOnUkrainian(
-                    todayWeatherResponce.Daily[1].Weather.ToList().FirstOrDefault().Description);
+                if (language == true)
+                {
+                    return localization.DisplayInfoOnUkraineOnTomorrow(tomorrowWeatherResponce);
+                }
 
-
-                //TODO: DateTime.Now.ToLocalTime() ? проверка
-                return $"Прогноз погоди на: {DateTime.Now.AddDays(1).ToShortDateString()}📆\n" +
-                    $"\nЧас України   🇺🇦: {DateTime.Now.ToShortDateString()} | {DateTime.Now.AddHours(1).ToShortTimeString()}, {dayForUkraine}" +
-                    $"\nЧас Варшави 🇵🇱: {DateTime.Now.ToShortDateString()} | {DateTime.Now.ToShortTimeString()}, {day}" +
-                    $"\n🌍🌎🌏" +
-                    $"\nРегіон: {todayWeatherResponce.Timezone} 🏙️" +
-                    $"\nЧас: {DateTime.UtcNow.AddSeconds(todayWeatherResponce.Timezone_offset).ToShortTimeString()} ⌚" +
-                    $"\nТемпература вранці: {Math.Round(todayWeatherResponce.Daily[1].Temp.Morn)}℃ 🌡️ ☀️🕗" +
-                    $"\nТемпература вдень: {Math.Round(todayWeatherResponce.Daily[1].Temp.Day)}℃   🌡️ 🌞🕑" +
-                    $"\nТемпература ввечері: {Math.Round(todayWeatherResponce.Daily[1].Temp.Eve)}℃ 🌡️ 🌙🕓" +
-                    $"\nТемпература вночі: {Math.Round(todayWeatherResponce.Daily[1].Temp.Night)}℃    🌡️ 🌚🕙" +
-                    $"\nТиск: {todayWeatherResponce.Daily[1].Pressure} гПа ⏱️" +
-                    $"\nВологість: {todayWeatherResponce.Daily[1].Humidity}% 💦" +
-                    $"\nШвидкість вітру: {todayWeatherResponce.Daily[1].Wind_speed} м/с 💨" +
-                    $"\nХмарність: {todayWeatherResponce.Daily[1].Clouds} % 🌥️" +
-                    $"\nЙмовірність опадів: {todayWeatherResponce.Daily[1].Pop * 100}% 🌧️" +
-                    $"\nОпис : {weatherDeskriptionOnUkrainianOnToday}";
+                return localization.DisplayInfoOnPolishOnTomorrow(tomorrowWeatherResponce);
             }
 
             return null;
         }
 
-        public static string GetWeekWeatherInfo(WeatherResponce todayWeatherResponce)
+        public static string GetWeekWeatherInfo(WeatherResponce weekWeatherResponce, bool language)
         {
-            StringBuilder Info = new StringBuilder();
-            if (todayWeatherResponce != null)
+            if (language == true)
             {
-                for (int i = 1; i <= 7; i++)
-                {
-                    var day = DayOfWeekLocalization.DayLocalization(DateTime.Now.DayOfWeek);
-                    var dayForUkraine = DayOfWeekLocalization.DayLocalization(DateTime.Now.AddHours(1).DayOfWeek);
-                    var weatherDeskriptionOnUkrainianOnToday = WeatherDescriptionLocalization.GetWeatherDescriptionOnUkrainian(
-                        todayWeatherResponce.Daily[i].Weather.ToList().FirstOrDefault().Description);
-
-
-                    //TODO: DateTime.Now.ToLocalTime() ? проверка
-                    var DayInfo = $"\n\nПрогноз погоди на: {DateTime.Now.AddDays(i).ToShortDateString()}📆\n" +
-                        $"\nЧас України   🇺🇦: {DateTime.Now.ToShortDateString()} | {DateTime.Now.AddHours(1).ToShortTimeString()}, {dayForUkraine}" +
-                        $"\nЧас Варшави 🇵🇱: {DateTime.Now.ToShortDateString()} | {DateTime.Now.ToShortTimeString()}, {day}" +
-                        $"\n🌍🌎🌏" +
-                        $"\nРегіон: {todayWeatherResponce.Timezone} 🏙️" +
-                        $"\nЧас: {DateTime.UtcNow.AddSeconds(todayWeatherResponce.Timezone_offset).ToShortTimeString()} ⌚" +
-                        $"\nТемпература вранці: {Math.Round(todayWeatherResponce.Daily[i].Temp.Morn)}℃   🌡️ ☀️🕗" +
-                        $"\nТемпература вдень: {Math.Round(todayWeatherResponce.Daily[i].Temp.Day)}℃   🌡️ 🌞🕑" +
-                        $"\nТемпература ввечері: {Math.Round(todayWeatherResponce.Daily[i].Temp.Eve)}℃  🌡️ 🌙🕓" +
-                        $"\nТемпература вночі: {Math.Round(todayWeatherResponce.Daily[i].Temp.Night)}℃      🌡️ 🌚🕙" +
-                        $"\nТиск: {todayWeatherResponce.Daily[i].Pressure} гПа ⏱️" +
-                        $"\nВологість: {todayWeatherResponce.Daily[i].Humidity}% 💦" +
-                        $"\nШвидкість вітру: {todayWeatherResponce.Daily[i].Wind_speed} м/с 💨" +
-                        $"\nХмарність: {todayWeatherResponce.Daily[i].Clouds} % 🌥️" +
-                        $"\nЙмовірність опадів: {todayWeatherResponce.Daily[i].Pop * 100}% 🌧️" +
-                        $"\nОпис : {weatherDeskriptionOnUkrainianOnToday}\n" +
-                        $"\n-----------------------------------";
-
-                    Info.Append(DayInfo);
-                }
-
-                return Info.ToString();
+                return localization.DisplayInfoOnUkraineOnWeek(weekWeatherResponce);
             }
 
-            return null;
+            return localization.DisplayInfoOnPolishOnWeek(weekWeatherResponce);
         }
     }
 }

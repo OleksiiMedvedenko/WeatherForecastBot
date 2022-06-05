@@ -13,22 +13,22 @@ namespace TelegramBot
         public float Temp_min { get; set; }
 
         /// <summary>
-        /// давление WeatherResponse => Main
+        /// Cisniencie WeatherResponse => Main
         /// </summary>
         public float Pressure { get; set; }
 
         /// <summary>
-        /// влажность  WeatherResponse => Main
+        /// wilgotność  WeatherResponse => Main
         /// </summary>
         public float Humidity { get; set; }
 
         /// <summary>
-        /// скорость ветра WeatherResponse => win
+        /// prędkość wiatru WeatherResponse => win
         /// </summary>
         public float Speed { get; set; }
 
         /// <summary>
-        /// облачность! WeatherResponse => Clouds
+        /// pochmurny! WeatherResponse => Clouds
         /// </summary>
         public float All { get; set; }
 
@@ -40,11 +40,11 @@ namespace TelegramBot
         public string Description { get; set; }
 
         /// <summary>
-        /// долгота города
+        /// długość geograficzna miasta
         /// </summary>
         public decimal Lon { get; set; }
         /// <summary>
-        /// широта города
+        /// szerokość geograficzna miasta
         /// </summary>
         public decimal Lat { get; set; }
 

@@ -5,7 +5,7 @@ namespace TelegramBot.Model.WeatherToDay
     public class WeatherInfoDescription
     {
         /// <summary>
-        /// Описание погоді на день, облачно, или будет дождь ... идт
+        /// Opis pogody na dzień, pochmurno lub pada deszcz…
         /// </summary>
         public string Description { get; set; }
     }

@@ -10,16 +10,14 @@ namespace TelegramBot
         public NowWeatherInfo Coord { get; set; }
 
         /// <summary>
-        /// региональные параметры 
+        /// ustawienia regionalne
         /// </summary>
         public NowWeatherInfo Sys { get; set; }
         /// <summary>
         /// city name
         /// </summary>
         public string Name { get; set; }
-        /// <summary>
-        /// часовой пояс - точнее прибавка времени к UTC
-        /// </summary>
+
         public int Timezone { get; set; }
     }
 }

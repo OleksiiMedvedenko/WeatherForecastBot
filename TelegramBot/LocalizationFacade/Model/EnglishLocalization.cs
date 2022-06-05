@@ -13,8 +13,6 @@ namespace TelegramBot.LocalizationFacade.Model
             return $"https://api.openweathermap.org/data/2.5/weather?q={city}&units=metric&lang=uk&appid=94ec0cde62edeab74471251a77d69697";
         }
 
-
-
         public string DisplayInfoForNow(NowWeatherResponse nowWeatherResponse)
         {
             return $"Ukraine Time   🇺🇦: {DateTime.Now.ToShortDateString()} | {DateTime.Now.AddHours(1).ToShortTimeString()}, {DateTime.Now.DayOfWeek}" +
