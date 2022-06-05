@@ -35,18 +35,18 @@ namespace TelegramBot.LocalizationFacade.Model
 
         public string DisplayInfoOnToday(WeatherResponce todayWeatherResponce)
         {
-            return $"Час України   🇺🇦: {DateTime.Now.ToShortDateString()} | {DateTime.Now.AddHours(1).ToShortTimeString()}, {DateTime.Now.DayOfWeek}" +
-                $"\nЧас Варшави 🇵🇱: {DateTime.Now.ToShortDateString()} | {DateTime.Now.ToShortTimeString()}, {DateTime.Now.DayOfWeek}" +
+            return $"Czas Ukraine   🇺🇦: {DateTime.Now.ToShortDateString()} | {DateTime.Now.AddHours(1).ToShortTimeString()}, {DateTime.Now.DayOfWeek}" +
+                $"\nCzas Warszawy 🇵🇱: {DateTime.Now.ToShortDateString()} | {DateTime.Now.ToShortTimeString()}, {DateTime.Now.DayOfWeek}" +
                 $"\n🌍🌎🌏" +
-                $"\nРегіон: {todayWeatherResponce.Timezone} 🏙️" +
+                $"\nKraj: {todayWeatherResponce.Timezone} 🏙️" +
                 $"\nЧас: {DateTime.UtcNow.AddSeconds(todayWeatherResponce.Timezone_offset).ToShortTimeString()} ⌚" +
                 $"\nТемпература вранці: {Math.Round(todayWeatherResponce.Daily[0].Temp.Morn)}℃  🌡️ ☀️🕗" +
                 $"\nТемпература вдень: {Math.Round(todayWeatherResponce.Daily[0].Temp.Day)}℃    🌡️ 🌞🕑" +
                 $"\nТемпература ввечері: {Math.Round(todayWeatherResponce.Daily[0].Temp.Eve)}℃  🌡️ 🌙🕓" +
                 $"\nТемпература вночі: {Math.Round(todayWeatherResponce.Daily[0].Temp.Night)}℃     🌡️ 🌚🕙" +
-                $"\nТиск: {todayWeatherResponce.Daily[0].Pressure} гПа ⏱️" +
-                $"\nВологість: {todayWeatherResponce.Daily[0].Humidity}% 💦" +
-                $"\nШвидкість вітру: {todayWeatherResponce.Daily[0].Wind_speed} м/с 💨" +
+                $"\nCisnienie: {todayWeatherResponce.Daily[0].Pressure} гПа ⏱️" +
+                $"\nWilgotność: {todayWeatherResponce.Daily[0].Humidity}% 💦" +
+                $"\nPrędkość wiatru: {todayWeatherResponce.Daily[0].Wind_speed} м/с 💨" +
                 $"\nХмарність: {todayWeatherResponce.Daily[0].Clouds} % 🌥️" +
                 $"\nЙмовірність опадів: {todayWeatherResponce.Daily[0].Pop * 100}% 🌧️" +
                 $"\nОпис : {todayWeatherResponce.Daily[0].Weather.ToList().FirstOrDefault().Description}";
