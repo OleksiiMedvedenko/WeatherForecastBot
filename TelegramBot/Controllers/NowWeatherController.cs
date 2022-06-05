@@ -12,14 +12,14 @@ namespace TelegramBot
     static class NowWeatherController
     {
         public static LocalizationInterface localization = new LocalizationInterface(new EnglishLocalization(), new PolishLocalization(), new UkrainianLocalization());
-        public static NowWeatherResponse GetWeatherFromWebSite(string city, Action action = null)
+        public static NowWeatherResponse GetWeatherFromWebSite(string city, string url = null)
         {
             try
             {
 
                 //string urlAddress = $"https://api.openweathermap.org/data/2.5/weather?q={city}&units=metric&appid=94ec0cde62edeab74471251a77d69697"; // &lang=ua - автоматическое переведенная инфрмация с сайтф на укр
 
-                var urlAddress = action.Method.ReturnType;
+                var urlAddress = url;
                 string response;
 
                 HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(urlAddress.ToString());

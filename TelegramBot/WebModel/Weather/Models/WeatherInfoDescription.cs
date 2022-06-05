@@ -2,7 +2,7 @@
 
 namespace TelegramBot.Model.WeatherToDay
 {
-    class WeatherInfoDescription
+    public class WeatherInfoDescription
     {
         /// <summary>
         /// Описание погоді на день, облачно, или будет дождь ... идт

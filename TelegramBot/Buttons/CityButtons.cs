@@ -3,7 +3,7 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 namespace TelegramBot.Buttons
 {
-    class CityButtons
+    public class CityButtons
     {
         internal static IReplyMarkup CitySelectionButton()
         {
