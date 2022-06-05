@@ -1,7 +1,7 @@
 ﻿
 namespace TelegramBot
 {
-    class NowWeatherResponse
+    public class NowWeatherResponse
     {
         public NowWeatherInfo Main { get; set; }
         public NowWeatherInfo Wind { get; set; }

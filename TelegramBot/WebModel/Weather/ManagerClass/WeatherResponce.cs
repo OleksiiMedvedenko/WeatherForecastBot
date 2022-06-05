@@ -2,7 +2,7 @@
 
 namespace TelegramBot.Model.WeatherToDay
 {
-    class WeatherResponce
+    public class WeatherResponce
     {
         public WeatherInfo[] Daily { get; set; }
         

@@ -1,7 +1,7 @@
 ﻿
 namespace TelegramBot.Model.WeatherToDay
 {
-    class TemperatureInfo
+    public class TemperatureInfo
     {
         public float Morn { get; set; }
         public float Day { get; set; }

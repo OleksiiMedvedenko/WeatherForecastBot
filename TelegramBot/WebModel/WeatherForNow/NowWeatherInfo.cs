@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace TelegramBot
 {
-    class NowWeatherInfo
+    public class NowWeatherInfo
     {
         //Переменные так написанны поскольку когда мы десириализируем данные , они могут записываться только в такие переменные - это сделал разработчик самого сайта с которого мы берем информацию
 
