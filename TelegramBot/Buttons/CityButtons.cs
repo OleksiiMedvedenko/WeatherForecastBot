@@ -11,7 +11,7 @@ namespace TelegramBot.Buttons
             {
                 Keyboard = new List<List<KeyboardButton>>
                 {
-                    new List<KeyboardButton> { new KeyboardButton { Text = $"Вроцлав" },  new KeyboardButton { Text = "Кропивницький" } },
+                    new List<KeyboardButton> { new KeyboardButton { Text = $"Wroclaw" },  new KeyboardButton { Text = "Kiev" } },
                 }
             };
         }

@@ -39,17 +39,17 @@ namespace TelegramBot.LocalizationFacade.Model
                 $"\nCzas Warszawy 🇵🇱: {DateTime.Now.ToShortDateString()} | {DateTime.Now.ToShortTimeString()}, {DateTime.Now.DayOfWeek}" +
                 $"\n🌍🌎🌏" +
                 $"\nKraj: {todayWeatherResponce.Timezone} 🏙️" +
-                $"\nЧас: {DateTime.UtcNow.AddSeconds(todayWeatherResponce.Timezone_offset).ToShortTimeString()} ⌚" +
-                $"\nТемпература вранці: {Math.Round(todayWeatherResponce.Daily[0].Temp.Morn)}℃  🌡️ ☀️🕗" +
-                $"\nТемпература вдень: {Math.Round(todayWeatherResponce.Daily[0].Temp.Day)}℃    🌡️ 🌞🕑" +
-                $"\nТемпература ввечері: {Math.Round(todayWeatherResponce.Daily[0].Temp.Eve)}℃  🌡️ 🌙🕓" +
-                $"\nТемпература вночі: {Math.Round(todayWeatherResponce.Daily[0].Temp.Night)}℃     🌡️ 🌚🕙" +
+                $"\nGodzinę: {DateTime.UtcNow.AddSeconds(todayWeatherResponce.Timezone_offset).ToShortTimeString()} ⌚" +
+                $"\nTemperatura rano: {Math.Round(todayWeatherResponce.Daily[0].Temp.Morn)}℃  🌡️ ☀️🕗" +
+                $"\nTemperatura w południu: {Math.Round(todayWeatherResponce.Daily[0].Temp.Day)}℃    🌡️ 🌞🕑" +
+                $"\nTemperatura wieczorem: {Math.Round(todayWeatherResponce.Daily[0].Temp.Eve)}℃  🌡️ 🌙🕓" +
+                $"\nTemperatura w nocy: {Math.Round(todayWeatherResponce.Daily[0].Temp.Night)}℃     🌡️ 🌚🕙" +
                 $"\nCisnienie: {todayWeatherResponce.Daily[0].Pressure} гПа ⏱️" +
                 $"\nWilgotność: {todayWeatherResponce.Daily[0].Humidity}% 💦" +
                 $"\nPrędkość wiatru: {todayWeatherResponce.Daily[0].Wind_speed} м/с 💨" +
-                $"\nХмарність: {todayWeatherResponce.Daily[0].Clouds} % 🌥️" +
-                $"\nЙмовірність опадів: {todayWeatherResponce.Daily[0].Pop * 100}% 🌧️" +
-                $"\nОпис : {todayWeatherResponce.Daily[0].Weather.ToList().FirstOrDefault().Description}";
+                $"\nZachmurzenie: {todayWeatherResponce.Daily[0].Clouds} % 🌥️" +
+                $"\nSzansa na opady: {todayWeatherResponce.Daily[0].Pop * 100}% 🌧️" +
+                $"\nOpis : {todayWeatherResponce.Daily[0].Weather.ToList().FirstOrDefault().Description}";
         }
 
 

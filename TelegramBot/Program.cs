@@ -26,6 +26,8 @@ namespace TelegramBot
         private static string _languageDataEntry = string.Empty;
         private static string _forecastDateEntry = string.Empty;
 
+        private static int indexer = 0;
+
         [Obsolete]
         static void Main(string[] args)
         {
@@ -66,7 +68,13 @@ namespace TelegramBot
 
                         if (!messageFromTG.Text.Equals($"Ukrainian") && !messageFromTG.Text.Equals("Polish")) // что бы код не выполнился когда мы будем вводить какую погоду мы хотим получить, без этой проверки краш приложения - исправить- сделать по нормальному  !
                         {
-                            _languageDataEntry = string.Empty;
+                            if (indexer >= 2)
+                            {
+                                indexer++;
+                                _languageDataEntry = string.Empty;
+                                indexer = 0;
+                            }
+
                             GetTimeForecast(messageFromTG);
                         }
                         break;
@@ -83,14 +91,21 @@ namespace TelegramBot
 
                         if (!messageFromTG.Text.Equals($"Polish") && !messageFromTG.Text.Equals("Ukrainian"))
                         {
-                            _languageDataEntry = string.Empty;
+
+                            if (indexer >= 2)
+                            {
+                                indexer++;
+                                _languageDataEntry = string.Empty;
+                                indexer = 0;
+                            }
+
                             GetTimeForecast(messageFromTG);
                         }
                         break;
 
                     default:
                         _languageDataEntry = string.Empty;
-                        await _client.SendTextMessageAsync(messageFromTG.Chat.Id, "Не знаю такої команди!",
+                        await _client.SendTextMessageAsync(messageFromTG.Chat.Id, "Command not found",
                             replyMarkup: LanguageButtons.LanguageSelectionButtons());
                         break;
                 }
@@ -177,9 +192,73 @@ namespace TelegramBot
 
                         break;
 
+                    case "Prognoza pogody na daną godzinę":
+
+                        if (_forecastDateEntry == messageFromTG.Text) // избегаем повторения, без єтой проверки код будет обрабатываться два раза - исправить- сделать по нормальному  !
+                        {
+                            var now = await _client.SendTextMessageAsync(messageFromTG.Chat.Id, "Wybierz swoje miasto lub napisz w dowolnym języku",
+                                replyMarkup: CityButtons.CitySelectionButton());
+                        }
+
+                        if (!messageFromTG.Text.Equals("Prognoza pogody na daną godzinę") && !messageFromTG.Text.Equals("Prognoza pogody na jutro")
+                            && !messageFromTG.Text.Equals("Siedmiodniowa prognoza pogody") && !messageFromTG.Text.Equals("Prognoza pogody na dziś")) // что бы код не выполнился когда мы будем вводить какую погоду мы хотим получить, без этой проверки краш приложения - исправить- сделать по нормальному  !
+                        {
+                            _forecastDateEntry = string.Empty;
+                            GetWeatherForecastForNow(messageFromTG);
+                        }
+                        break;
+
+                    case "Prognoza pogody na dziś":
+                        if (_forecastDateEntry == messageFromTG.Text)
+                        {
+                            var now = await _client.SendTextMessageAsync(messageFromTG.Chat.Id, "Wybierz swoje miasto lub napisz w dowolnym języku",
+                                replyMarkup: CityButtons.CitySelectionButton());
+                        }
+
+                        if (!messageFromTG.Text.Equals("Prognoza pogody na daną godzinę") && !messageFromTG.Text.Equals("Prognoza pogody na jutro")
+                           && !messageFromTG.Text.Equals("Siedmiodniowa prognoza pogody") && !messageFromTG.Text.Equals("Prognoza pogody na dziś"))
+                        {
+                            _forecastDateEntry = string.Empty;
+                            GetWeatherForecastForToday(messageFromTG);
+                        }
+                        break;
+
+                    case "Prognoza pogody na jutro":
+
+                        if (_forecastDateEntry == messageFromTG.Text)
+                        {
+                            var now = await _client.SendTextMessageAsync(messageFromTG.Chat.Id, "Wybierz swoje miasto lub napisz w dowolnym języku",
+                                replyMarkup: CityButtons.CitySelectionButton());
+                        }
+
+                        if (!messageFromTG.Text.Equals("Prognoza pogody na daną godzinę") && !messageFromTG.Text.Equals("Prognoza pogody na jutro")
+                           && !messageFromTG.Text.Equals("Siedmiodniowa prognoza pogody") && !messageFromTG.Text.Equals("Prognoza pogody na dziś"))
+                        {
+                            _forecastDateEntry = string.Empty;
+                            GetWeatherForecastForTomorrow(messageFromTG);
+                        }
+                        break;
+
+                    case "Siedmiodniowa prognoza pogody":
+
+                        if (_forecastDateEntry == messageFromTG.Text)
+                        {
+                            var now = await _client.SendTextMessageAsync(messageFromTG.Chat.Id, "Wybierz swoje miasto lub napisz w dowolnym języku",
+                                replyMarkup: CityButtons.CitySelectionButton());
+                        }
+
+                        if (!messageFromTG.Text.Equals("Prognoza pogody na daną godzinę") && !messageFromTG.Text.Equals("Prognoza pogody na jutro")
+                           && !messageFromTG.Text.Equals("Siedmiodniowa prognoza pogody") && !messageFromTG.Text.Equals("Prognoza pogody na dziś"))
+                        {
+                            _forecastDateEntry = string.Empty;
+                            GetWeatherForecastForWeek(messageFromTG);
+                        }
+
+                        break;
+
                     default:
                         _forecastDateEntry = string.Empty;
-                        await _client.SendTextMessageAsync(messageFromTG.Chat.Id, "Не знаю такої команди!",
+                        await _client.SendTextMessageAsync(messageFromTG.Chat.Id, "Command not found",
                             replyMarkup: WeatherForecastButtons.SelectingWeatherForecastButtonOnUkraine());
                         break;
                 }
@@ -193,7 +272,7 @@ namespace TelegramBot
 
             switch (message.Text)
             {
-                case "Вроцлав":
+                case "Wroclaw":
 
                     if (choiceLanguage == true)
                     {
@@ -204,12 +283,13 @@ namespace TelegramBot
                         urlString = localization.GetInfoOnPolish(message.Text);
                     }
 
-                    _nowWeatherResponse = NowWeatherController.GetWeatherFromWebSite("Вроцлав", urlString);
-                    var Wroclaw = await _client.SendTextMessageAsync(message.Chat.Id, NowWeatherController.GetWeatherInfoNow(_nowWeatherResponse), 
-                        replyMarkup: WeatherForecastButtons.SelectingWeatherForecastButtonOnUkraine());
+                    _nowWeatherResponse = NowWeatherController.GetWeatherFromWebSite("Wroclaw", urlString);
+                    var Wroclaw = await _client.SendTextMessageAsync(message.Chat.Id, NowWeatherController.GetWeatherInfoNow(_nowWeatherResponse, choiceLanguage), 
+                        replyMarkup: LanguageButtons.LanguageSelectionButtons());
+                    _languageDataEntry = "";
                     return;
 
-                case "Кропивницький":
+                case "Kiev":
 
                     if (choiceLanguage == true)
                     {
@@ -220,9 +300,10 @@ namespace TelegramBot
                         urlString = localization.GetInfoOnPolish(message.Text);
                     }
 
-                    _nowWeatherResponse = NowWeatherController.GetWeatherFromWebSite("Кропивницький", urlString);
-                    var Kropyvnytskyi = await _client.SendTextMessageAsync(message.Chat.Id, NowWeatherController.GetWeatherInfoNow(_nowWeatherResponse),
-                         replyMarkup: WeatherForecastButtons.SelectingWeatherForecastButtonOnUkraine());
+                    _nowWeatherResponse = NowWeatherController.GetWeatherFromWebSite("Kiev", urlString);
+                    var Kropyvnytskyi = await _client.SendTextMessageAsync(message.Chat.Id, NowWeatherController.GetWeatherInfoNow(_nowWeatherResponse, choiceLanguage),
+                         replyMarkup: LanguageButtons.LanguageSelectionButtons());
+                    _languageDataEntry = "";
                     break;
 
                 default:
@@ -240,14 +321,14 @@ namespace TelegramBot
 
                     if (_nowWeatherResponse != null)
                     {
-                        var anyCity = await _client.SendTextMessageAsync(message.Chat.Id, NowWeatherController.GetWeatherInfoNow(_nowWeatherResponse),
-                            replyMarkup: WeatherForecastButtons.SelectingWeatherForecastButtonOnUkraine());
+                        var anyCity = await _client.SendTextMessageAsync(message.Chat.Id, NowWeatherController.GetWeatherInfoNow(_nowWeatherResponse, choiceLanguage),
+                            replyMarkup: LanguageButtons.LanguageSelectionButtons());
 
                         break;
                     }
                     else
                     {
-                        await _client.SendTextMessageAsync(message.Chat.Id, "Перевірте чи поправно введена назва міста!", 
+                        await _client.SendTextMessageAsync(message.Chat.Id, "Check if the entered city name is correct!", 
                             replyMarkup: LanguageButtons.LanguageSelectionButtons());
                     }
 
