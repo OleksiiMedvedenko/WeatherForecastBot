@@ -340,13 +340,22 @@ namespace TelegramBot
 
         private static async void GetWeatherForecastForToday(Message message)
         {
+            string urlForCity = String.Empty;
             string urlString = String.Empty;
-
             switch (message.Text)
             {
                 case "Wroclaw":
 
-                    _nowWeatherResponse = NowWeatherController.GetWeatherFromWebSite("Wroclaw");
+                    if (choiceLanguage == true)
+                    {
+                        urlForCity = localization.GetnfoOnUkrainian(message.Text);
+                    }
+                    else
+                    {
+                        urlForCity = localization.GetInfoOnPolish(message.Text);
+                    }
+
+                    _nowWeatherResponse = NowWeatherController.GetWeatherFromWebSite("Wroclaw", urlForCity);
                     (decimal, decimal) coordsWRO = NowWeatherController.GetCityCoords(_nowWeatherResponse);
 
                     if (choiceLanguage == true)
@@ -367,7 +376,17 @@ namespace TelegramBot
                     return;
 
                 case "Kiev":
-                    _nowWeatherResponse = NowWeatherController.GetWeatherFromWebSite("Kiev");
+
+                    if (choiceLanguage == true)
+                    {
+                        urlForCity = localization.GetnfoOnUkrainian(message.Text);
+                    }
+                    else
+                    {
+                        urlForCity = localization.GetInfoOnPolish(message.Text);
+                    }
+
+                    _nowWeatherResponse = NowWeatherController.GetWeatherFromWebSite("Kiev", urlForCity);
                     (decimal, decimal) coordsKROP = NowWeatherController.GetCityCoords(_nowWeatherResponse);
 
 
@@ -389,7 +408,16 @@ namespace TelegramBot
 
                 default:
 
-                    _nowWeatherResponse = NowWeatherController.GetWeatherFromWebSite(message.Text);
+                    if (choiceLanguage == true)
+                    {
+                        urlForCity = localization.GetnfoOnUkrainian(message.Text);
+                    }
+                    else
+                    {
+                        urlForCity = localization.GetInfoOnPolish(message.Text);
+                    }
+
+                    _nowWeatherResponse = NowWeatherController.GetWeatherFromWebSite(message.Text, urlForCity);
                     (decimal, decimal) coordsAnyCity = NowWeatherController.GetCityCoords(_nowWeatherResponse);
 
                     if (choiceLanguage == true)
@@ -425,11 +453,22 @@ namespace TelegramBot
         private static async void GetWeatherForecastForTomorrow(Message message)
         {
             string urlString = String.Empty;
+            string urlForCity = String.Empty;
 
             switch (message.Text)
             {
                 case "Wroclaw":
-                    _nowWeatherResponse = NowWeatherController.GetWeatherFromWebSite("Wroclaw");
+
+                    if (choiceLanguage == true)
+                    {
+                        urlForCity = localization.GetnfoOnUkrainian(message.Text);
+                    }
+                    else
+                    {
+                        urlForCity = localization.GetInfoOnPolish(message.Text);
+                    }
+
+                    _nowWeatherResponse = NowWeatherController.GetWeatherFromWebSite("Wroclaw", urlForCity);
                     (decimal, decimal) coordsWRO = NowWeatherController.GetCityCoords(_nowWeatherResponse);
 
                     if (choiceLanguage == true)
@@ -450,7 +489,17 @@ namespace TelegramBot
                     return;
 
                 case "Kiev":
-                    _nowWeatherResponse = NowWeatherController.GetWeatherFromWebSite("Kiev");
+
+                    if (choiceLanguage == true)
+                    {
+                        urlForCity = localization.GetnfoOnUkrainian(message.Text);
+                    }
+                    else
+                    {
+                        urlForCity = localization.GetInfoOnPolish(message.Text);
+                    }
+
+                    _nowWeatherResponse = NowWeatherController.GetWeatherFromWebSite("Kiev", urlForCity);
                     (decimal, decimal) coordsKROP = NowWeatherController.GetCityCoords(_nowWeatherResponse);
 
                     if (choiceLanguage == true)
@@ -471,7 +520,16 @@ namespace TelegramBot
 
                 default:
 
-                    _nowWeatherResponse = NowWeatherController.GetWeatherFromWebSite(message.Text);
+                    if (choiceLanguage == true)
+                    {
+                        urlForCity = localization.GetnfoOnUkrainian(message.Text);
+                    }
+                    else
+                    {
+                        urlForCity = localization.GetInfoOnPolish(message.Text);
+                    }
+
+                    _nowWeatherResponse = NowWeatherController.GetWeatherFromWebSite(message.Text, urlForCity);
                     (decimal, decimal) coordsAnyCity = NowWeatherController.GetCityCoords(_nowWeatherResponse);
 
 
@@ -508,10 +566,21 @@ namespace TelegramBot
         private static async void GetWeatherForecastForWeek(Message message)
         {
             string urlString = String.Empty;
+            string urlForCity = String.Empty;
             switch (message.Text)
             {
                 case "Wroclaw":
-                    _nowWeatherResponse = NowWeatherController.GetWeatherFromWebSite("Wroclaw");
+
+                    if (choiceLanguage == true)
+                    {
+                        urlForCity = localization.GetnfoOnUkrainian(message.Text);
+                    }
+                    else
+                    {
+                        urlForCity = localization.GetInfoOnPolish(message.Text);
+                    }
+
+                    _nowWeatherResponse = NowWeatherController.GetWeatherFromWebSite("Wroclaw", urlForCity);
                     (decimal, decimal) coordsWRO = NowWeatherController.GetCityCoords(_nowWeatherResponse);
 
                     if (choiceLanguage == true)
@@ -532,7 +601,17 @@ namespace TelegramBot
                     return;
 
                 case "Kiev":
-                    _nowWeatherResponse = NowWeatherController.GetWeatherFromWebSite("Kiev");
+
+                    if (choiceLanguage == true)
+                    {
+                        urlForCity = localization.GetnfoOnUkrainian(message.Text);
+                    }
+                    else
+                    {
+                        urlForCity = localization.GetInfoOnPolish(message.Text);
+                    }
+
+                    _nowWeatherResponse = NowWeatherController.GetWeatherFromWebSite("Kiev", urlForCity);
                     (decimal, decimal) coordsKROP = NowWeatherController.GetCityCoords(_nowWeatherResponse);
 
                     if (choiceLanguage == true)
@@ -553,7 +632,16 @@ namespace TelegramBot
 
                 default:
 
-                    _nowWeatherResponse = NowWeatherController.GetWeatherFromWebSite(message.Text);
+                    if (choiceLanguage == true)
+                    {
+                        urlForCity = localization.GetnfoOnUkrainian(message.Text);
+                    }
+                    else
+                    {
+                        urlForCity = localization.GetInfoOnPolish(message.Text);
+                    }
+
+                    _nowWeatherResponse = NowWeatherController.GetWeatherFromWebSite(message.Text, urlForCity);
                     (decimal, decimal) coordsAnyCity = NowWeatherController.GetCityCoords(_nowWeatherResponse);
 
                     if (choiceLanguage == true)

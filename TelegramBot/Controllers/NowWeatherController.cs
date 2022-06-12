@@ -12,7 +12,7 @@ namespace TelegramBot
     static class NowWeatherController
     {
         public static LocalizationInterface localization = new LocalizationInterface(new EnglishLocalization(), new PolishLocalization(), new UkrainianLocalization());
-        public static NowWeatherResponse GetWeatherFromWebSite(string city, string url = null)
+        public static NowWeatherResponse GetWeatherFromWebSite(string city, string url)
         {
             try
             {

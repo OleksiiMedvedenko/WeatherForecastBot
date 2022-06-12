@@ -45,7 +45,7 @@ namespace TelegramBot.Controllers
         {
             if (language == true)
             {
-                return localization.DisplayInfoOnUkrOnToday(todayWeatherResponce);
+                 return localization.DisplayInfoOnUkrOnToday(todayWeatherResponce);
             }
             return localization.DisplayInfoOnPolishOnToday(todayWeatherResponce);
         }
