@@ -22,7 +22,6 @@ namespace TelegramBot
         private static WeatherResponce _weatherResponce;
 
         private static bool choiceLanguage;
-
         private static string _languageDataEntry = string.Empty;
         private static string _forecastDateEntry = string.Empty;
 
@@ -265,6 +264,7 @@ namespace TelegramBot
             }
         }
 
+        [Obsolete]
         private static async void GetWeatherForecastForNow(Message message)
         {
             string urlString = String.Empty;
@@ -338,6 +338,7 @@ namespace TelegramBot
             }
         }
 
+        [Obsolete]
         private static async void GetWeatherForecastForToday(Message message)
         {
             string urlForCity = String.Empty;
@@ -450,6 +451,7 @@ namespace TelegramBot
             }
         }
 
+        [Obsolete]
         private static async void GetWeatherForecastForTomorrow(Message message)
         {
             string urlString = String.Empty;
@@ -563,6 +565,7 @@ namespace TelegramBot
             }
         }
 
+        [Obsolete]
         private static async void GetWeatherForecastForWeek(Message message)
         {
             string urlString = String.Empty;

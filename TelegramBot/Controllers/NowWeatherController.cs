@@ -3,7 +3,6 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Net;
-using TelegramBot.Localization;
 using TelegramBot.LocalizationFacade;
 using TelegramBot.LocalizationFacade.Model;
 
