@@ -13,15 +13,15 @@ namespace TelegramBot
 {
     class Program
     {
-        private static string Token { get; set; } = "5226846542:AAGsUUU6NnpAykz8UZKJLKPXlK_f9qhDIRE";
+        private static string _token { get; set; } = "5226846542:AAGsUUU6NnpAykz8UZKJLKPXlK_f9qhDIRE";
 
-        public static LocalizationInterface localization = new LocalizationInterface(new EnglishLocalization(), new PolishLocalization(), new UkrainianLocalization());
+        private static LocalizationInterface _localization = new LocalizationInterface(new EnglishLocalization(), new PolishLocalization(), new UkrainianLocalization());
         
         private static TelegramBotClient _client;
         private static NowWeatherResponse _nowWeatherResponse;
         private static WeatherResponce _weatherResponce;
 
-        private static bool choiceLanguage;
+        private static bool _choiceLanguage;
         private static string _languageDataEntry = string.Empty;
         private static string _forecastDateEntry = string.Empty;
 
@@ -30,16 +30,13 @@ namespace TelegramBot
         [Obsolete]
         static void Main(string[] args)
         {
-            _client = new TelegramBotClient(Token);
+            _client = new TelegramBotClient(_token);
             _client.StartReceiving(new UpdateType[] { UpdateType.Message });
             _client.OnMessage += OnMessageHandler;
             Console.ReadLine();
             _client.StopReceiving();
         }
 
-        // - krótki opis działania tej metody, jest pętla While, najpierw otrzymamy z telegramu
-        // wiadomość jaką pogodę potrzebujemy, następnie wpisujemy wartość do zmiennej (_choiceDay) aby zapamiętać nasz wybór,
-        // w końcu pytamy o miasto, w którym chcemy poznać pogodę
         [Obsolete]
         private static async void OnMessageHandler(object sender, MessageEventArgs e)
         {
@@ -58,7 +55,7 @@ namespace TelegramBot
                 {
                     case "Ukrainian":
 
-                        choiceLanguage = true;
+                        _choiceLanguage = true;
                         if (_languageDataEntry == messageFromTG.Text)
                         {
                             var now = await _client.SendTextMessageAsync(messageFromTG.Chat.Id, "Виберіть час, на який ви хочете отримати прогноз погоди",
@@ -80,7 +77,7 @@ namespace TelegramBot
 
                     case "Polish":
 
-                        choiceLanguage = false;
+                        _choiceLanguage = false;
 
                         if (_languageDataEntry == messageFromTG.Text)
                         {
@@ -274,54 +271,54 @@ namespace TelegramBot
             {
                 case "Wroclaw":
 
-                    if (choiceLanguage == true)
+                    if (_choiceLanguage == true)
                     {
-                        urlString = localization.GetnfoOnUkrainian(message.Text);
+                        urlString = _localization.GetnfoOnUkrainian(message.Text);
                     }
                     else
                     {
-                        urlString = localization.GetInfoOnPolish(message.Text);
+                        urlString = _localization.GetInfoOnPolish(message.Text);
                     }
 
                     _nowWeatherResponse = NowWeatherController.GetWeatherFromWebSite("Wroclaw", urlString);
-                    var Wroclaw = await _client.SendTextMessageAsync(message.Chat.Id, NowWeatherController.GetWeatherInfoNow(_nowWeatherResponse, choiceLanguage), 
+                    var Wroclaw = await _client.SendTextMessageAsync(message.Chat.Id, NowWeatherController.GetWeatherInfoNow(_nowWeatherResponse, _choiceLanguage), 
                         replyMarkup: LanguageButtons.LanguageSelectionButtons());
                     _languageDataEntry = "";
                     return;
 
                 case "Kiev":
 
-                    if (choiceLanguage == true)
+                    if (_choiceLanguage == true)
                     {
-                        urlString = localization.GetnfoOnUkrainian(message.Text);
+                        urlString = _localization.GetnfoOnUkrainian(message.Text);
                     }
                     else
                     {
-                        urlString = localization.GetInfoOnPolish(message.Text);
+                        urlString = _localization.GetInfoOnPolish(message.Text);
                     }
 
                     _nowWeatherResponse = NowWeatherController.GetWeatherFromWebSite("Kiev", urlString);
-                    var Kropyvnytskyi = await _client.SendTextMessageAsync(message.Chat.Id, NowWeatherController.GetWeatherInfoNow(_nowWeatherResponse, choiceLanguage),
+                    var Kropyvnytskyi = await _client.SendTextMessageAsync(message.Chat.Id, NowWeatherController.GetWeatherInfoNow(_nowWeatherResponse, _choiceLanguage),
                          replyMarkup: LanguageButtons.LanguageSelectionButtons());
                     _languageDataEntry = "";
                     break;
 
                 default:
 
-                    if (choiceLanguage == true)
+                    if (_choiceLanguage == true)
                     {
-                        urlString = localization.GetnfoOnUkrainian(message.Text);
+                        urlString = _localization.GetnfoOnUkrainian(message.Text);
                     }
                     else
                     {
-                        urlString = localization.GetInfoOnPolish(message.Text);
+                        urlString = _localization.GetInfoOnPolish(message.Text);
                     }
 
                     _nowWeatherResponse = NowWeatherController.GetWeatherFromWebSite(message.Text, urlString);
 
                     if (_nowWeatherResponse != null)
                     {
-                        var anyCity = await _client.SendTextMessageAsync(message.Chat.Id, NowWeatherController.GetWeatherInfoNow(_nowWeatherResponse, choiceLanguage),
+                        var anyCity = await _client.SendTextMessageAsync(message.Chat.Id, NowWeatherController.GetWeatherInfoNow(_nowWeatherResponse, _choiceLanguage),
                             replyMarkup: LanguageButtons.LanguageSelectionButtons());
 
                         break;
@@ -347,30 +344,30 @@ namespace TelegramBot
             {
                 case "Wroclaw":
 
-                    if (choiceLanguage == true)
+                    if (_choiceLanguage == true)
                     {
-                        urlForCity = localization.GetnfoOnUkrainian(message.Text);
+                        urlForCity = _localization.GetnfoOnUkrainian(message.Text);
                     }
                     else
                     {
-                        urlForCity = localization.GetInfoOnPolish(message.Text);
+                        urlForCity = _localization.GetInfoOnPolish(message.Text);
                     }
 
                     _nowWeatherResponse = NowWeatherController.GetWeatherFromWebSite("Wroclaw", urlForCity);
                     (decimal, decimal) coordsWRO = NowWeatherController.GetCityCoords(_nowWeatherResponse);
 
-                    if (choiceLanguage == true)
+                    if (_choiceLanguage == true)
                     {
-                        urlString = localization.GetnfoOnUkrainian(coordsWRO.Item1, coordsWRO.Item2);
+                        urlString = _localization.GetnfoOnUkrainian(coordsWRO.Item1, coordsWRO.Item2);
                     }
                     else
                     {
-                        urlString = localization.GetInfoOnPolish(coordsWRO.Item1, coordsWRO.Item2);
+                        urlString = _localization.GetInfoOnPolish(coordsWRO.Item1, coordsWRO.Item2);
                     }
 
                     _weatherResponce = WeatherController.GetWeatherFromWebSite(urlString);
 
-                    var Wroclaw = await _client.SendTextMessageAsync(message.Chat.Id, WeatherController.GetTodayWeatherInfo(_weatherResponce, choiceLanguage),
+                    var Wroclaw = await _client.SendTextMessageAsync(message.Chat.Id, WeatherController.GetTodayWeatherInfo(_weatherResponce, _choiceLanguage),
                         replyMarkup: LanguageButtons.LanguageSelectionButtons());
                     _languageDataEntry = "";
 
@@ -378,63 +375,63 @@ namespace TelegramBot
 
                 case "Kiev":
 
-                    if (choiceLanguage == true)
+                    if (_choiceLanguage == true)
                     {
-                        urlForCity = localization.GetnfoOnUkrainian(message.Text);
+                        urlForCity = _localization.GetnfoOnUkrainian(message.Text);
                     }
                     else
                     {
-                        urlForCity = localization.GetInfoOnPolish(message.Text);
+                        urlForCity = _localization.GetInfoOnPolish(message.Text);
                     }
 
                     _nowWeatherResponse = NowWeatherController.GetWeatherFromWebSite("Kiev", urlForCity);
                     (decimal, decimal) coordsKROP = NowWeatherController.GetCityCoords(_nowWeatherResponse);
 
 
-                    if (choiceLanguage == true)
+                    if (_choiceLanguage == true)
                     {
-                        urlString = localization.GetnfoOnUkrainian(coordsKROP.Item1, coordsKROP.Item2);
+                        urlString = _localization.GetnfoOnUkrainian(coordsKROP.Item1, coordsKROP.Item2);
                     }
                     else
                     {
-                        urlString = localization.GetInfoOnPolish(coordsKROP.Item1, coordsKROP.Item2);
+                        urlString = _localization.GetInfoOnPolish(coordsKROP.Item1, coordsKROP.Item2);
                     }
 
                     _weatherResponce = WeatherController.GetWeatherFromWebSite(urlString);
 
-                    var Krop = await _client.SendTextMessageAsync(message.Chat.Id, WeatherController.GetTodayWeatherInfo(_weatherResponce, choiceLanguage),
+                    var Krop = await _client.SendTextMessageAsync(message.Chat.Id, WeatherController.GetTodayWeatherInfo(_weatherResponce, _choiceLanguage),
                         replyMarkup: LanguageButtons.LanguageSelectionButtons());
                     _languageDataEntry = "";
                     break;
 
                 default:
 
-                    if (choiceLanguage == true)
+                    if (_choiceLanguage == true)
                     {
-                        urlForCity = localization.GetnfoOnUkrainian(message.Text);
+                        urlForCity = _localization.GetnfoOnUkrainian(message.Text);
                     }
                     else
                     {
-                        urlForCity = localization.GetInfoOnPolish(message.Text);
+                        urlForCity = _localization.GetInfoOnPolish(message.Text);
                     }
 
                     _nowWeatherResponse = NowWeatherController.GetWeatherFromWebSite(message.Text, urlForCity);
                     (decimal, decimal) coordsAnyCity = NowWeatherController.GetCityCoords(_nowWeatherResponse);
 
-                    if (choiceLanguage == true)
+                    if (_choiceLanguage == true)
                     {
-                        urlString = localization.GetnfoOnUkrainian(coordsAnyCity.Item1, coordsAnyCity.Item2);
+                        urlString = _localization.GetnfoOnUkrainian(coordsAnyCity.Item1, coordsAnyCity.Item2);
                     }
                     else
                     {
-                        urlString = localization.GetInfoOnPolish(coordsAnyCity.Item1, coordsAnyCity.Item2);
+                        urlString = _localization.GetInfoOnPolish(coordsAnyCity.Item1, coordsAnyCity.Item2);
                     }
 
                     _weatherResponce = WeatherController.GetWeatherFromWebSite(urlString);
 
                     if (_weatherResponce != null)
                     {
-                        var anyCity = await _client.SendTextMessageAsync(message.Chat.Id, WeatherController.GetTodayWeatherInfo(_weatherResponce, choiceLanguage),
+                        var anyCity = await _client.SendTextMessageAsync(message.Chat.Id, WeatherController.GetTodayWeatherInfo(_weatherResponce, _choiceLanguage),
                         replyMarkup: LanguageButtons.LanguageSelectionButtons());
 
                         break;
@@ -461,30 +458,30 @@ namespace TelegramBot
             {
                 case "Wroclaw":
 
-                    if (choiceLanguage == true)
+                    if (_choiceLanguage == true)
                     {
-                        urlForCity = localization.GetnfoOnUkrainian(message.Text);
+                        urlForCity = _localization.GetnfoOnUkrainian(message.Text);
                     }
                     else
                     {
-                        urlForCity = localization.GetInfoOnPolish(message.Text);
+                        urlForCity = _localization.GetInfoOnPolish(message.Text);
                     }
 
                     _nowWeatherResponse = NowWeatherController.GetWeatherFromWebSite("Wroclaw", urlForCity);
                     (decimal, decimal) coordsWRO = NowWeatherController.GetCityCoords(_nowWeatherResponse);
 
-                    if (choiceLanguage == true)
+                    if (_choiceLanguage == true)
                     {
-                        urlString = localization.GetnfoOnUkrainian(coordsWRO.Item1, coordsWRO.Item2);
+                        urlString = _localization.GetnfoOnUkrainian(coordsWRO.Item1, coordsWRO.Item2);
                     }
                     else
                     {
-                        urlString = localization.GetInfoOnPolish(coordsWRO.Item1, coordsWRO.Item2);
+                        urlString = _localization.GetInfoOnPolish(coordsWRO.Item1, coordsWRO.Item2);
                     }
 
                     _weatherResponce = WeatherController.GetWeatherFromWebSite(urlString);
 
-                    var Wroclaw = await _client.SendTextMessageAsync(message.Chat.Id, WeatherController.GetTomorrowWeatherInfo(_weatherResponce, choiceLanguage),
+                    var Wroclaw = await _client.SendTextMessageAsync(message.Chat.Id, WeatherController.GetTomorrowWeatherInfo(_weatherResponce, _choiceLanguage),
                         replyMarkup: LanguageButtons.LanguageSelectionButtons());
                     _languageDataEntry = "";
 
@@ -492,63 +489,63 @@ namespace TelegramBot
 
                 case "Kiev":
 
-                    if (choiceLanguage == true)
+                    if (_choiceLanguage == true)
                     {
-                        urlForCity = localization.GetnfoOnUkrainian(message.Text);
+                        urlForCity = _localization.GetnfoOnUkrainian(message.Text);
                     }
                     else
                     {
-                        urlForCity = localization.GetInfoOnPolish(message.Text);
+                        urlForCity = _localization.GetInfoOnPolish(message.Text);
                     }
 
                     _nowWeatherResponse = NowWeatherController.GetWeatherFromWebSite("Kiev", urlForCity);
                     (decimal, decimal) coordsKROP = NowWeatherController.GetCityCoords(_nowWeatherResponse);
 
-                    if (choiceLanguage == true)
+                    if (_choiceLanguage == true)
                     {
-                        urlString = localization.GetnfoOnUkrainian(coordsKROP.Item1, coordsKROP.Item2);
+                        urlString = _localization.GetnfoOnUkrainian(coordsKROP.Item1, coordsKROP.Item2);
                     }
                     else
                     {
-                        urlString = localization.GetInfoOnPolish(coordsKROP.Item1, coordsKROP.Item2);
+                        urlString = _localization.GetInfoOnPolish(coordsKROP.Item1, coordsKROP.Item2);
                     }
 
                     _weatherResponce = WeatherController.GetWeatherFromWebSite(urlString);
 
-                    var Krop = await _client.SendTextMessageAsync(message.Chat.Id, WeatherController.GetTomorrowWeatherInfo(_weatherResponce, choiceLanguage),
+                    var Krop = await _client.SendTextMessageAsync(message.Chat.Id, WeatherController.GetTomorrowWeatherInfo(_weatherResponce, _choiceLanguage),
                         replyMarkup: LanguageButtons.LanguageSelectionButtons());
                     _languageDataEntry = "";
                     break;
 
                 default:
 
-                    if (choiceLanguage == true)
+                    if (_choiceLanguage == true)
                     {
-                        urlForCity = localization.GetnfoOnUkrainian(message.Text);
+                        urlForCity = _localization.GetnfoOnUkrainian(message.Text);
                     }
                     else
                     {
-                        urlForCity = localization.GetInfoOnPolish(message.Text);
+                        urlForCity = _localization.GetInfoOnPolish(message.Text);
                     }
 
                     _nowWeatherResponse = NowWeatherController.GetWeatherFromWebSite(message.Text, urlForCity);
                     (decimal, decimal) coordsAnyCity = NowWeatherController.GetCityCoords(_nowWeatherResponse);
 
 
-                    if (choiceLanguage == true)
+                    if (_choiceLanguage == true)
                     {
-                        urlString = localization.GetnfoOnUkrainian(coordsAnyCity.Item1, coordsAnyCity.Item2);
+                        urlString = _localization.GetnfoOnUkrainian(coordsAnyCity.Item1, coordsAnyCity.Item2);
                     }
                     else
                     {
-                        urlString = localization.GetInfoOnPolish(coordsAnyCity.Item1, coordsAnyCity.Item2);
+                        urlString = _localization.GetInfoOnPolish(coordsAnyCity.Item1, coordsAnyCity.Item2);
                     }
 
                     _weatherResponce = WeatherController.GetWeatherFromWebSite(urlString);
 
                     if (_weatherResponce != null)
                     {
-                        var anyCity = await _client.SendTextMessageAsync(message.Chat.Id, WeatherController.GetTomorrowWeatherInfo(_weatherResponce, choiceLanguage),
+                        var anyCity = await _client.SendTextMessageAsync(message.Chat.Id, WeatherController.GetTomorrowWeatherInfo(_weatherResponce, _choiceLanguage),
                         replyMarkup: LanguageButtons.LanguageSelectionButtons());
 
                         break;
@@ -574,30 +571,30 @@ namespace TelegramBot
             {
                 case "Wroclaw":
 
-                    if (choiceLanguage == true)
+                    if (_choiceLanguage == true)
                     {
-                        urlForCity = localization.GetnfoOnUkrainian(message.Text);
+                        urlForCity = _localization.GetnfoOnUkrainian(message.Text);
                     }
                     else
                     {
-                        urlForCity = localization.GetInfoOnPolish(message.Text);
+                        urlForCity = _localization.GetInfoOnPolish(message.Text);
                     }
 
                     _nowWeatherResponse = NowWeatherController.GetWeatherFromWebSite("Wroclaw", urlForCity);
                     (decimal, decimal) coordsWRO = NowWeatherController.GetCityCoords(_nowWeatherResponse);
 
-                    if (choiceLanguage == true)
+                    if (_choiceLanguage == true)
                     {
-                        urlString = localization.GetnfoOnUkrainian(coordsWRO.Item1, coordsWRO.Item2);
+                        urlString = _localization.GetnfoOnUkrainian(coordsWRO.Item1, coordsWRO.Item2);
                     }
                     else
                     {
-                        urlString = localization.GetInfoOnPolish(coordsWRO.Item1, coordsWRO.Item2);
+                        urlString = _localization.GetInfoOnPolish(coordsWRO.Item1, coordsWRO.Item2);
                     }
 
                     _weatherResponce = WeatherController.GetWeatherFromWebSite(urlString);
 
-                    var Wroclaw = await _client.SendTextMessageAsync(message.Chat.Id, WeatherController.GetWeekWeatherInfo(_weatherResponce, choiceLanguage),
+                    var Wroclaw = await _client.SendTextMessageAsync(message.Chat.Id, WeatherController.GetWeekWeatherInfo(_weatherResponce, _choiceLanguage),
                         replyMarkup: LanguageButtons.LanguageSelectionButtons());
                     _languageDataEntry = "";
 
@@ -605,62 +602,62 @@ namespace TelegramBot
 
                 case "Kiev":
 
-                    if (choiceLanguage == true)
+                    if (_choiceLanguage == true)
                     {
-                        urlForCity = localization.GetnfoOnUkrainian(message.Text);
+                        urlForCity = _localization.GetnfoOnUkrainian(message.Text);
                     }
                     else
                     {
-                        urlForCity = localization.GetInfoOnPolish(message.Text);
+                        urlForCity = _localization.GetInfoOnPolish(message.Text);
                     }
 
                     _nowWeatherResponse = NowWeatherController.GetWeatherFromWebSite("Kiev", urlForCity);
                     (decimal, decimal) coordsKROP = NowWeatherController.GetCityCoords(_nowWeatherResponse);
 
-                    if (choiceLanguage == true)
+                    if (_choiceLanguage == true)
                     {
-                        urlString = localization.GetnfoOnUkrainian(coordsKROP.Item1, coordsKROP.Item2);
+                        urlString = _localization.GetnfoOnUkrainian(coordsKROP.Item1, coordsKROP.Item2);
                     }
                     else
                     {
-                        urlString = localization.GetInfoOnPolish(coordsKROP.Item1, coordsKROP.Item2);
+                        urlString = _localization.GetInfoOnPolish(coordsKROP.Item1, coordsKROP.Item2);
                     }
 
                     _weatherResponce = WeatherController.GetWeatherFromWebSite(urlString);
 
-                    var Krop = await _client.SendTextMessageAsync(message.Chat.Id, WeatherController.GetWeekWeatherInfo(_weatherResponce, choiceLanguage),
+                    var Krop = await _client.SendTextMessageAsync(message.Chat.Id, WeatherController.GetWeekWeatherInfo(_weatherResponce, _choiceLanguage),
                         replyMarkup: LanguageButtons.LanguageSelectionButtons());
                     _languageDataEntry = "";
                     break;
 
                 default:
 
-                    if (choiceLanguage == true)
+                    if (_choiceLanguage == true)
                     {
-                        urlForCity = localization.GetnfoOnUkrainian(message.Text);
+                        urlForCity = _localization.GetnfoOnUkrainian(message.Text);
                     }
                     else
                     {
-                        urlForCity = localization.GetInfoOnPolish(message.Text);
+                        urlForCity = _localization.GetInfoOnPolish(message.Text);
                     }
 
                     _nowWeatherResponse = NowWeatherController.GetWeatherFromWebSite(message.Text, urlForCity);
                     (decimal, decimal) coordsAnyCity = NowWeatherController.GetCityCoords(_nowWeatherResponse);
 
-                    if (choiceLanguage == true)
+                    if (_choiceLanguage == true)
                     {
-                        urlString = localization.GetnfoOnUkrainian(coordsAnyCity.Item1, coordsAnyCity.Item2);
+                        urlString = _localization.GetnfoOnUkrainian(coordsAnyCity.Item1, coordsAnyCity.Item2);
                     }
                     else
                     {
-                        urlString = localization.GetInfoOnPolish(coordsAnyCity.Item1, coordsAnyCity.Item2);
+                        urlString = _localization.GetInfoOnPolish(coordsAnyCity.Item1, coordsAnyCity.Item2);
                     }
 
                     _weatherResponce = WeatherController.GetWeatherFromWebSite(urlString);
 
                     if (_weatherResponce != null)
                     {
-                        var anyCity = await _client.SendTextMessageAsync(message.Chat.Id, WeatherController.GetWeekWeatherInfo(_weatherResponce, choiceLanguage),
+                        var anyCity = await _client.SendTextMessageAsync(message.Chat.Id, WeatherController.GetWeekWeatherInfo(_weatherResponce, _choiceLanguage),
                         replyMarkup: LanguageButtons.LanguageSelectionButtons());
 
                         break;
